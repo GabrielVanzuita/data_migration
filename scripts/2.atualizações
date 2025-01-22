@@ -1,0 +1,25 @@
+1. Conectar
+2. Ler
+3. ajustar
+4. Transferir/fundir/fazer a ponte
+5. Fechar.
+
+
+Atualizando os métodos de importação para verificar se a fonte é um arquivo local ou uma url.
+
+É importante sempre criar uma base de dados nova como backup. Uma atualização futura pode criar um banco de dados
+adicionando um caractere a ele caso ele já exista. 
+
+A ultima coisa feita foi testar a parte de identificação do arquivo, 
+que deu erro. O primeiro passo é concerta-lo
+
+Transformar o local do arquivo de windows para a url do ambiente virutal;
+"/mnt/c/Users/Gabriel/Desktop/studyprojects/pomodorojson.json"
+
+Todas as funções de leitura e interpretação de dados LOCAIS foram executadas e tudo está funcional.
+
+Testando funções de leitura e intrepretação de dados externo .
+
+Você passou o tempo todo fazendo commito desses arquivos. Agora é necessario copiar o "pomodoro.json" para dentro dessa pasta
+relizar o commit
+criar um novo banco de dados mongo e usar a biblioteca requests para transferir os arquivos.
