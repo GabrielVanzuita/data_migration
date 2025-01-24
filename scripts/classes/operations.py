@@ -89,13 +89,16 @@ class DataSource:
                     print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
                 else:
                     raise ValueError("O formato do JSON esperado é uma lista de objetos.")
+            elif self.data_recon == "local":
+                with open(self.source, 'r') as file:
+                    data = json.load(file)
+                    result = collection.insert_many (data)
+                    # Exibe o resultado
+                    print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
+        except:
+            print ("Algo de errado não deu certo")
+            
 
-            else:
-                print("Tipo de dados não suportado. Verifique o valor de 'data_type'.")
+        
 
-        except requests.exceptions.RequestException as e:
-            print(f"Erro durante a requisição HTTP: {e}")
-        except json.JSONDecodeError as e:
-            print(f"Erro ao decodificar o JSON: {e}")
-        except Exception as e:
-            print(f"Ocorreu um erro inesperado: {e}")
+       
