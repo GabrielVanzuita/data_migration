@@ -37,25 +37,37 @@ class DataSource:
             self.data_recon = None
 
     def detect_data_type(self):
-        """Detecta se o arquivo local é JSON ou CSV."""
         if self.data_recon == "local":
             try:
                 with open(self.source, 'r') as file:
+                    # Tenta carregar como JSON
                     try:
                         json.load(file)
-                        self.data_type = "JSON"
+                        self.data_type = "json"
+                        print("Arquivo do tipo JSON detectado.")
+                        return self.data_type
                     except json.JSONDecodeError:
+                    # Reseta o ponteiro do arquivo para o início
                         file.seek(0)
                         try:
-                            csv.reader(file).__next__()
-                            self.data_type = "CSV"
-                        except (csv.Error, StopIteration):
-                            self.data_type = "Unknown"
+                            # Tenta verificar se é um CSV válido
+                            csv.Sniffer().sniff(file.read(1024))
+                            file.seek(0)  # Volta ao início do arquivo
+                            self.data_type = "csv"
+                            print("Arquivo do tipo CSV detectado.")
+                            return self.data_type
+                        except csv.Error:
+                            self.data_type = "unknown"
+                            print("Arquivo desconhecido ou não suportado.")
+                            return self.data_type
             except FileNotFoundError:
                 print("Arquivo não encontrado.")
                 self.data_type = None
+                return self.data_type
         else:
             print("A detecção de tipo de dados é apenas para arquivos locais.")
+            self.data_type = None
+            return self.data_type
 
 
     def create_db(self):
@@ -90,15 +102,21 @@ class DataSource:
                 else:
                     raise ValueError("O formato do JSON esperado é uma lista de objetos.")
             elif self.data_recon == "local":
-                with open(self.source, 'r') as file:
-                    data = json.load(file)
-                    result = collection.insert_many (data)
-                    # Exibe o resultado
-                    print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
-        except:
-            print ("Algo de errado não deu certo")
-            
+                if self.data_type == 'json':
+                    with open(self.source, 'r') as file:
+                        data = json.load(file)
+                        result = collection.insert_many (data)
+                        # Exibe o resultado
+                        print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
 
+                elif self.data_type == 'csv':
+                    with open(self.source, mode='r') as file:
+                        reader = csv.DictReader(file)
+                        data = [row for row in reader]
+                        result = collection.insert_many(data)
+                        print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
+        except:
+            print ("cu")
         
 
        

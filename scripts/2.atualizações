@@ -23,3 +23,38 @@ Testando funções de leitura e intrepretação de dados externo .
 Você passou o tempo todo fazendo commito desses arquivos. Agora é necessario copiar o "pomodoro.json" para dentro dessa pasta
 relizar o commit
 criar um novo banco de dados mongo e usar a biblioteca requests para transferir os arquivos.
+
+Todos os "analisadores" de fonte estão funcionando tanto para locais quanto para arquivos online. 
+
+Criar o banco de dados no mongo e adicionar a coleção 
+
+Alterada a classe de operações. Ela agora necessita da classe de conecção pois a criação de bancos de dados
+requisita o estanciamento.
+
+
+CLASSE LOAD DATA
+Agora é necessário salvar a data importada online no banco de dados Mongo. O que estava acontecendo
+era um problema de conversão. Continue a pesquisa partindo da ideia de unificação "Mundial" de dados, onde
+não importa o formato no qual o dado é importado, e sem armazenado e uma variável vazia ou CSV ou JSON. 
+
+A lógica é : Lê>
+append em string
+converte no formato
+insert no banco de dados
+
+O bloco JSON de execução 
+
+response = requests.get(self.data_url)
+data_list = [response.text]  # Cria uma lista contendo o texto da resposta
+conteudo_json = json.loads(data_list[0])  # Carrega o conteúdo JSON do texto
+Está funcional 
+
+O método de inserir JSON a partir de links online está funcionando, contudo há um problema na hora de redefinir
+o atributo da classe (data_type) com o Data Handler. Isso está prejudicando a interpretação do carregador
+de dados
+
+O método de inserir json a partir de links online foi testado e está funcional, agora é necessário 
+trabalhar o método para arquivos locais.
+
+O código que lê arquivos locais em Json foi testado e está funcional, agora preciso testar para CSV
+

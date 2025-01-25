@@ -6,7 +6,7 @@ from classes.operations import DataSource
 username = os.getenv("MONGO_USERNAME", "gbrvbusiness")
 password = os.getenv("MONGO_PASSWORD", "9AHmX4Hna0nvuANa")
 clustername = os.getenv("MONGO_CLUSTERNAME", "StudiesCluster")
-data_source = r"/mnt/c/Users/Gabriel/Desktop/studyprojects/pomodorojson.json"
+data_source = r"/home/gbrv_linux/pipeline-python-mongo-mysql/scripts/pomodorojson.json"
 db_name = "pasta"
 collection_name = "pomodoro"
 
