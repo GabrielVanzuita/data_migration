@@ -3,13 +3,14 @@ import os
 import json
 import csv
 
+
 class DataSource:
     def __init__(self, source, db_name, collection_name, connector):
         """Inicializa a manipulação de dados e banco de dados."""
         self.source = source
         self.db_name = db_name
         self.collection_name = collection_name
-        self.connector = connector # Recebe o cliente do MongoDB
+        self.connector = connector  # Recebe o cliente do MongoDB
         self.collection = None
         self.data_recon = None
         self.data_type = None
@@ -37,6 +38,7 @@ class DataSource:
             self.data_recon = None
 
     def detect_data_type(self):
+        """Detecta o tipo de dados (JSON ou CSV) para fontes locais ou online."""
         if self.data_recon == "local":
             try:
                 with open(self.source, 'r') as file:
@@ -44,17 +46,16 @@ class DataSource:
                     try:
                         json.load(file)
                         self.data_type = "json"
-                        print("Arquivo do tipo JSON detectado.")
+                        print("Arquivo local do tipo JSON detectado.")
                         return self.data_type
                     except json.JSONDecodeError:
-                    # Reseta o ponteiro do arquivo para o início
                         file.seek(0)
                         try:
-                            # Tenta verificar se é um CSV válido
+                            # Verifica se é um CSV válido
                             csv.Sniffer().sniff(file.read(1024))
-                            file.seek(0)  # Volta ao início do arquivo
+                            file.seek(0)
                             self.data_type = "csv"
-                            print("Arquivo do tipo CSV detectado.")
+                            print("Arquivo local do tipo CSV detectado.")
                             return self.data_type
                         except csv.Error:
                             self.data_type = "unknown"
@@ -64,59 +65,79 @@ class DataSource:
                 print("Arquivo não encontrado.")
                 self.data_type = None
                 return self.data_type
+
+        elif self.data_recon == "online":
+            try:
+                content = self.data_url.text
+                # Tenta carregar como JSON
+                try:
+                    json.loads(content)
+                    self.data_type = "json"
+                    print("Fonte online do tipo JSON detectada.")
+                    return self.data_type
+                except json.JSONDecodeError:
+                    # Verifica se é CSV
+                    try:
+                        csv.Sniffer().sniff(content[:1024])
+                        self.data_type = "csv"
+                        print("Fonte online do tipo CSV detectada.")
+                        return self.data_type
+                    except csv.Error:
+                        self.data_type = "unknown"
+                        print("Fonte online desconhecida ou não suportada.")
+                        return self.data_type
+            except Exception as e:
+                print(f"Erro ao determinar o tipo de dados online: {e}")
+                self.data_type = None
+                return self.data_type
         else:
-            print("A detecção de tipo de dados é apenas para arquivos locais.")
+            print("A detecção de tipo de dados não pôde ser realizada.")
             self.data_type = None
             return self.data_type
 
-
     def create_db(self):
         try:
-            db = self.connector[self.db_name]  # Correto: usa o MongoClient como dicionário
-            self.collection = db[self.collection_name]  # Correto: acessa a coleção
+            db = self.connector[self.db_name]
+            self.collection = db[self.collection_name]
             print(f"Banco de dados '{self.db_name}' e coleção '{self.collection_name}' prontos.")
         except Exception as e:
             print(f"Erro ao criar banco ou coleção: {e}")
 
-      
     def load_Data(self):
+        """Carrega os dados para o MongoDB com base no tipo de fonte e arquivo."""
         try:
-            # Acessando o banco de dados e a coleção
-            db = self.connector[self.db_name]  # Conexão com o banco especificado
-            collection = db["pomodoro"]  # Substitua pelo nome da coleção
+            db = self.connector[self.db_name]
+            collection = db[self.collection_name]
 
-            if self.data_recon == 'online':
-                # Faz a requisição para obter os dados
-                response = requests.get(self.source, timeout=10)  # Define um timeout para evitar bloqueios
-                response.raise_for_status()  # Verifica se ocorreu algum erro na requisição
-
-                # Carrega o JSON da resposta
-                data_list = json.loads(response.text)
-
-                if isinstance(data_list, list):  # Verifica se o dado é uma lista
-                    # Insere os dados no MongoDB
-                    result = collection.insert_many(data_list)
-
-                    # Exibe o resultado
-                    print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
+            if self.data_recon == "online":
+                content = self.data_url.text
+                if self.data_type == "json":
+                    data_list = json.loads(content)
+                    if isinstance(data_list, list):
+                        result = collection.insert_many(data_list)
+                        print(f"{len(result.inserted_ids)} documentos inseridos com sucesso.")
+                    else:
+                        raise ValueError("O formato do JSON esperado é uma lista de objetos.")
+                elif self.data_type == "csv":
+                    reader = csv.DictReader(content.splitlines())
+                    data = [row for row in reader]
+                    result = collection.insert_many(data)
+                    print(f"{len(result.inserted_ids)} documentos inseridos com sucesso.")
                 else:
-                    raise ValueError("O formato do JSON esperado é uma lista de objetos.")
+                    print("Tipo de dados online não suportado.")
             elif self.data_recon == "local":
-                if self.data_type == 'json':
+                if self.data_type == "json":
                     with open(self.source, 'r') as file:
                         data = json.load(file)
-                        result = collection.insert_many (data)
-                        # Exibe o resultado
-                        print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
-
-                elif self.data_type == 'csv':
+                        result = collection.insert_many(data)
+                        print(f"{len(result.inserted_ids)} documentos inseridos com sucesso.")
+                elif self.data_type == "csv":
                     with open(self.source, mode='r') as file:
                         reader = csv.DictReader(file)
                         data = [row for row in reader]
                         result = collection.insert_many(data)
-                        print(f'{len(result.inserted_ids)} documentos inseridos com sucesso.')
-        except:
-            print ("cu")
-        
-
-       
+                        print(f"{len(result.inserted_ids)} documentos inseridos com sucesso.")
+                else:
+                    print("Tipo de dados local não suportado.")
+        except Exception as e:
+            print(f"Erro ao carregar dados: {e}")
