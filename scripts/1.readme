@@ -15,4 +15,4 @@ Quando você cria uma nova conexão, ela é independente da anterior.
 Isso significa que as conexões "órfãs" (antigas e não fechadas explicitamente) 
 podem persistir por um tempo no servidor até serem descartadas automaticamente.
 
-A conecção deve estar estabelecida para a listagem de databases. 
+A conexão deve estar estabelecida para a listagem de databases. 

@@ -1,5 +1,5 @@
 class mySQLoperator:
-    def __init__(self, operations_mongo, db_name, connector):
+    def __init__(self, operations_mongo, db_name, connector, table_name, columns):
         """
         Inicializa a manipulação de dados e banco de dados.
 
@@ -11,10 +11,10 @@ class mySQLoperator:
         self.operations_mongo  = operations_mongo  # Instância da classe mongoOperator
         self.connector = connector  # Conexão MySQL
         self.db_name = db_name  # Nome do banco
-        self.table_name = table_name  # Nome da tabela
-        self.columns = columns  # Estrutura da tabela
+        self.table_name = table_name
+        self.columns = columns
         self.data_print = operations_mongo.data_print  # Dados do MongoDB
-
+    
     def create_database(self):
         """
         Cria o banco de dados, caso não exista.

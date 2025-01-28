@@ -58,3 +58,25 @@ trabalhar o método para arquivos locais.
 
 O código que lê arquivos locais em Json foi testado e está funcional, agora preciso testar para CSV
 
+Detector de CSV testado e declarado como funcional.
+
+Agora programar o leitor de CSV. O leitor de CSV esta funcional. Adicionada a ideia de identificação de tipo
+de arquivo para arquivos online. Agora o resultado da requisição é analisado e segregado entre CSV ou JSON
+para garantir a correta impressão dele em load_Data.
+
+Agora é necessário criar toda a lógica de migração para o mySQL. Fora previamente determinado a divisão entre
+classes de conexão e de operações. As classes de Mongo e MySQL devem ficar separadas. 
+
+A lógica de migração de dados foi criada e implementada, agora precisa ser testada. 
+O primeiro teste a ser realizado é o de garantir a conexão com o mySQL/cursor do mysql. 
+
+Como esperado a conexão não está sendo efetuada. Agora preciso entender o por que. 
+Eu digitei a senha "C5" no campo de senhas daí foi 
+
+O próximo passo é verificar a classe de manejamento de dados mysql, seu instanciamento e por fim como
+ela recebe/retorna dados. Após isso, testar função de migração. 
+
+Funcionamento da instancia da classe de operações paa o mySQL definida. Buscar agora efetuar o pipeline de 
+extração e migração dos dados.
+
+
