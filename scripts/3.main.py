@@ -1,6 +1,6 @@
 import os
 from classes.connection_mongo import MongoConnection
-from classes.operations import DataSource
+from scripts.classes.operations_mongo import DataSource
 
 # Usar variáveis de ambiente para maior segurança
 username = os.getenv("MONGO_USERNAME", "gbrvbusiness")

@@ -16,6 +16,7 @@ class DataSource:
         self.data_type = None
         self.data_url = None
         self.data_path = None
+        self.data_print = None
 
     def handle_source(self):
         """Identifica se a fonte é uma URL ou um arquivo local."""
@@ -141,3 +142,21 @@ class DataSource:
                     print("Tipo de dados local não suportado.")
         except Exception as e:
             print(f"Erro ao carregar dados: {e}")
+
+
+    def write_data (self):
+        db = self.connector [self.db_name]
+        collection = db [self.collection_name]
+        self.data_print = list (collection.find())
+        
+    def list_collections(self):
+        """Lista as coleções disponíveis no banco de dados."""
+        return self.db.list_collection_names()
+
+    def get_columns(self, collection_name, limit=100):
+        """Retorna os nomes das colunas (campos) de uma coleção."""
+        all_fields = set()
+        collection = self.db[collection_name]
+        for document in collection.find().limit(limit):
+            all_fields.update(document.keys())
+        return list(all_fields)
