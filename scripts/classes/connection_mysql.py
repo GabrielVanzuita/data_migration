@@ -52,4 +52,50 @@ class MySQLCon:
             print(f"A conexão não foi encerrada. Erro: {e}")
 
     
+    # Getter e Setter para host
+    @property
+    def host(self):
+        return self._host
+
+    @host.setter
+    def host(self, value):
+        self._host = value
+
+    # Getter e Setter para username
+    @property
+    def username(self):
+        return self._username
+
+    @username.setter
+    def username(self, value):
+        self._username = value
+
+    # Getter e Setter para password
+    @property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, value):
+        self._password = value
+
+    # Getter e Setter para connection
+    @property
+    def connection(self):
+        return self._connection
+
+    @connection.setter
+    def connection(self, value):
+        self._connection = value
+
+    # Getter e Setter para cursor
+    @property
+    def cursor(self):
+        return self._cursor
+
+    @cursor.setter
+    def cursor(self, value):
+        self._cursor = value
+
+    
     

@@ -72,3 +72,22 @@ class mySQLoperator:
             self.connector.rollback()
         finally:
             cursor.close()
+
+    # Getter e Setter para operations_mongo
+    @property
+    def operations_mongo(self):
+        return self._operations_mongo
+
+    @operations_mongo.setter
+    def operations_mongo(self, value):
+        self._operations_mongo = value
+
+    # Getter e Setter para connector
+    @property
+    def connector(self):
+        return self._connector
+
+    @connector.setter
+    def connector(self, value):
+        self._connector = value
+

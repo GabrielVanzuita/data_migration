@@ -144,11 +144,16 @@ class DataSource:
             print(f"Erro ao carregar dados: {e}")
 
 
-    def write_data (self):
-        db = self.connector [self.db_name]
-        collection = db [self.collection_name]
-        self.data_print = list (collection.find())
-        
+    def write_data(self):
+        paper = []
+        db = self.connector[self.db_name]
+        collection = db[self.collection_name]
+        printer = list(collection.find())  # Correto: `find()` e não `findclear()`
+        paper.extend(printer)  # Insere todos os documentos na lista `paper`
+        self.data_print = paper  # Armazena diretamente `paper` em `self.data_print`
+        for doc in self.data_print:
+            print(doc)
+
     def list_collections(self):
         """Lista as coleções disponíveis no banco de dados."""
         return self.db.list_collection_names()
@@ -161,4 +166,97 @@ class DataSource:
             all_fields.update(document.keys())
         return list(all_fields)
     
+
+    # Getter e Setter para source
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, value):
+        self._source = value
+
+    # Getter e Setter para db_name
+    @property
+    def db_name(self):
+        return self._db_name
+
+    @db_name.setter
+    def db_name(self, value):
+        self._db_name = value
+
+    # Getter e Setter para collection_name
+    @property
+    def collection_name(self):
+        return self._collection_name
+
+    @collection_name.setter
+    def collection_name(self, value):
+        self._collection_name = value
+
+    # Getter e Setter para connector
+    @property
+    def connector(self):
+        return self._connector
+
+    @connector.setter
+    def connector(self, value):
+        self._connector = value
+
+    # Getter e Setter para collection
+    @property
+    def collection(self):
+        return self._collection
+
+    @collection.setter
+    def collection(self, value):
+        self._collection = value
+
+    # Getter e Setter para data_recon
+    @property
+    def data_recon(self):
+        return self._data_recon
+
+    @data_recon.setter
+    def data_recon(self, value):
+        self._data_recon = value
+
+    # Getter e Setter para data_type
+    @property
+    def data_type(self):
+        return self._data_type
+
+    @data_type.setter
+    def data_type(self, value):
+        self._data_type = value
+
+    # Getter e Setter para data_url
+    @property
+    def data_url(self):
+        return self._data_url
+
+    @data_url.setter
+    def data_url(self, value):
+        self._data_url = value
+
+    # Getter e Setter para data_path
+    @property
+    def data_path(self):
+        return self._data_path
+
+    @data_path.setter
+    def data_path(self, value):
+        self._data_path = value
+
+    # Getter e Setter para data_print
+    @property
+    def data_print(self):
+        return self._data_print
+
+    @data_print.setter
+    def data_print(self, value):
+        self._data_print = value
+    
+ 
+
     
