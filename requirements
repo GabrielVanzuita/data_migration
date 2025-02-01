@@ -1,0 +1,9 @@
+# Atualizando os repositórios e pacotes do sistema
+sudo apt update
+sudo apt upgrade python3
+
+# Instalando dependências do projeto
+pip install pymongo
+pip install mysql-connector-python  # ou PyMySQL
+pip install loguru
+pip install requests
